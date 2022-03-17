@@ -1,5 +1,5 @@
 FROM alpine:latest
-MAINTAINER  William Edwards <shadowapex@gmail.com>
+LABEL maintainer="Mike SoRelle <mike@webskills.net>"
 
 ENV GIT_REPO=""
 ENV GIT_BRANCH="master"
