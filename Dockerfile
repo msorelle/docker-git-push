@@ -10,11 +10,26 @@ ENV WORKING_DIR=""
 ENV SSH_KEY=""
 ENV FILES_TO_COMMIT="."
 ENV SLEEP_INTERVAL="600"
+ENV UID="1001"
+ENV GID="100"
+ENV USER="gituser"
+ENV HOME=/home/$USER
+
 
 RUN apk update && \
         apk add git && \
-	apk add openssh-client
+	apk add openssh-client && \
+        apk add sudo
+
+RUN     adduser -u $UID -G users -D $USER \
+        && mkdir -p /etc/sudoers.d \
+        && echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER \
+        && chmod 0440 /etc/sudoers.d/$USER
+
+USER $USER
+WORKDIR $HOME
 
 COPY entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD echo "User $(whoami) id info: $(id) running from $PWD with premissions: $(sudo -l)"
+#ENTRYPOINT ["/entrypoint.sh"]

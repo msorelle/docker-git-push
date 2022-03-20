@@ -26,6 +26,11 @@ if [ ! -d ~/.ssh ]; then
 	echo -e "Host *\n    StrictHostKeyChecking no\n    UserKnownHostsFile=/dev/null\n" > ~/.ssh/config
 fi
 
+# Setup .netrc 
+# Use github personal access token
+cp .netrc ~/.netrc
+chmod 600 ~/.netrc
+
 # Check to see if the given directory already has an initialized
 # git repository.
 if [ ! -d "${WORKING_DIR}/.git" ]; then
@@ -33,7 +38,7 @@ if [ ! -d "${WORKING_DIR}/.git" ]; then
 	git init 
 	git remote add ${GIT_ORIGIN} ${GIT_REPO}
 	git fetch
-	git checkout -t ${GIT_ORIGIN}/${GIT_BRANCH}
+#	git checkout -t ${GIT_ORIGIN}/${GIT_BRANCH}
 fi
 
 # Configure our user and email to commit as.
@@ -42,8 +47,7 @@ git config user.email "${COMMIT_EMAIL}"
 
 # Loop forever and push new changes at the given interval
 while true; do
-	# Sleep for the given interval.
-	sleep ${SLEEP_INTERVAL}
+	
 
 	# Reset our variable for checking whether or not changes were found.
 	CHANGES_FOUND=""
@@ -77,4 +81,6 @@ while true; do
 		git commit -m "Update detected changes."
 		git push ${GIT_ORIGIN} ${GIT_BRANCH}
 	fi
+	# Sleep for the given interval.
+	sleep ${SLEEP_INTERVAL}
 done
